@@ -130,3 +130,6 @@ dmypy.json
 
 # ignore the data files
 *.csv
+
+# ignore outputs of networkx in html till we are sure it is relevant
+*.html
