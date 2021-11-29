@@ -55,10 +55,7 @@ app.layout = dbc.Container(
     Output('predicted', 'options'), Input('injuries', 'value')
 )
 def get_predictions(input_injuries):
-    related = connected_nodes(net, input_injuries[0], 2, 0, 0.0000001)[0]
-    print(related)
-    results = []
-    [results.extend(x) for x in related.values()]
+    results = connected_nodes(net, input_injuries[0], 2, 0, 0.0000001)
     return [{'label': icd_desc[node], 'value': node} for node in results]
 
 if __name__ == '__main__':
