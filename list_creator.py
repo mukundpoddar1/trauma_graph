@@ -3,8 +3,7 @@ import pandas as pd
 import json
 
 # %%
-data_loc = 'data/'
-encounter_data = data_loc + 'RDS_ICD10_DCODE.csv'
+encounter_data = 'RDS_ICD10_DCODE.csv'
 df = pd.read_csv(encounter_data)
 # keep the first 5 digits of the DCODE
 df['ICD10_DCODE'] = df['ICD10_DCODE'].astype(str).apply(lambda x: x[:5])
