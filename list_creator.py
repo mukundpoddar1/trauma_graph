@@ -1,6 +1,7 @@
 # %%
 import pandas as pd
 import json
+from sklearn.model_selection import train_test_split
 
 # %%
 encounter_data = 'RDS_ICD10_DCODE.csv'
@@ -59,7 +60,9 @@ def convert_to_dict(diagnoses):
     return adj_list
 
 # Take a subsample for exploratory
-adj_list = convert_to_dict(diagnoses.sample(5000))
+train_diag, test_diag = train_test_split(diagnoses, test_size=0.1, random_state=42)
+adj_list = convert_to_dict(train_diag)
 write_to_file(adj_list, 'adj_list.csv')
+test_diag.to_csv('test.csv', index=False)  
 
 #%%
