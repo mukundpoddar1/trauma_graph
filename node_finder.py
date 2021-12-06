@@ -17,6 +17,8 @@ def connected_nodes(graph, source_node, degree, number, weight_thres):
     note: essentially the idea is to extract a subgraph coming from that node
     the result of this could be further verified by using nx.descendants(graph, source_node)
     '''
+    if source_node not in graph:
+        return []
     temp_graph = nx.Graph()
     result_nodes = {}
     all_nodes = [source_node]
