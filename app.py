@@ -24,7 +24,12 @@ def load_nodes():
 def load_descriptions(nodes):
     descriptions = pd.read_csv('data/RDS_ICD10_DCODEDES.csv', encoding_errors='replace')
     descriptions['short_code'] = descriptions[descriptions['ICD10_DCODE'].apply(lambda code: type(code)==str and code!='-1' and code!='-2')]['ICD10_DCODE'].apply(lambda code: code[:5])
-    icd_desc = {node: descriptions[descriptions['short_code']==node]['ICD10_DCODEDES'].iloc[0] for node in nodes}
+    def get_description(node):
+        try:
+            return descriptions[descriptions['short_code']==node]['ICD10_DCODEDES'].iloc[0]
+        except IndexError:
+            return 'Unknown'
+    icd_desc = {node: get_description(node) for node in nodes}
     desc_icd = {v: k for k,v in icd_desc.items()}
     return icd_desc, desc_icd
 
@@ -33,7 +38,6 @@ icd_desc, desc_icd = load_descriptions(injury_codes)
 
 with open('adj_list.csv') as json_file:
     adj_list = json.load(json_file)
-fig = plt.figure(1, figsize=(40, 40))
 net = nx.Graph(adj_list)
 
 app.layout = dbc.Container(
@@ -47,6 +51,7 @@ app.layout = dbc.Container(
                 options=[{'label': desc, 'value': code} for code, desc in icd_desc.items()],
                 multi=True)
             ]),
+            dbc.Row(html.H3('Associated Injuries'), align="center"),
             dcc.Checklist(id='predicted', labelStyle = dict(display='block'))
         ]
     )
