@@ -60,10 +60,8 @@ def connected_nodes(graph, source_node, degree, number, weight_thres):
         if len(temp)!=0:
             result_nodes[cur_num_edge] = [x for x in temp if weights[x]>weight_thres]
         neighbors = [x for x in temp if weights[x]>weight_thres]
-    
+        flattened_result = []
+        [flattened_result.extend(x) for x in result_nodes.values()]
 
-    #nx.draw(graph.subgraph(nx.shortest_path(graph.to_undirected(),source_node)),with_labels = True)
-    
-
-    return result_nodes, weights, temp_graph
+    return flattened_result
 
