@@ -9,7 +9,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from node_finder import connected_nodes
 
-app = dash.Dash('Trauma Dashboard')
+app = dash.Dash('Trauma Dashboard', external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 def load_nodes():
     with open('adj_list.csv') as json_file:
@@ -51,7 +51,7 @@ app.layout = dbc.Container(
                 options=[{'label': desc, 'value': code} for code, desc in icd_desc.items()],
                 multi=True)
             ]),
-            dbc.Row(html.H3('Associated Injuries'), align="center"),
+            dbc.Row(html.H4('Associated Injuries'), align="center"),
             dcc.Checklist(id='predicted', labelStyle = dict(display='block'))
         ]
     )
