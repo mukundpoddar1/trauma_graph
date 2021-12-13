@@ -4,7 +4,7 @@ import json
 from sklearn.model_selection import train_test_split
 
 # %%
-encounter_data = 'RDS_ICD10_DCODE.csv'
+encounter_data = 'data/RDS_ICD10_DCODE.csv'
 df = pd.read_csv(encounter_data)
 # keep the first 5 digits of the DCODE
 df['ICD10_DCODE'] = df['ICD10_DCODE'].astype(str).apply(lambda x: x[:5])
@@ -60,7 +60,7 @@ def convert_to_dict(diagnoses):
     return adj_list
 
 # Take a subsample for exploratory
-train_diag, test_diag = train_test_split(diagnoses, test_size=0.1, random_state=42)
+train_diag, test_diag = train_test_split(diagnoses, test_size=0.2, random_state=42)
 adj_list = convert_to_dict(train_diag)
 write_to_file(adj_list, 'adj_list.csv')
 test_diag.to_csv('test.csv', index=False)  
