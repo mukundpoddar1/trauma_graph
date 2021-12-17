@@ -1,7 +1,8 @@
 #%%
 import pandas as pd
-from node_finder import connected_nodes, get_community
+from node_finder import connected_nodes, get_community, detect_communities
 from numpy.random import choice
+import numpy as np
 import networkx as nx
 import json
 from sklearn.metrics import jaccard_score
@@ -27,10 +28,16 @@ net = nx.Graph(adj_list)
 #%%
 def get_pred_list(input):
     input = input.strip(' \'')
-    return get_community(net, input)#, 2, 0, 0.0000001)
+    return connected_nodes(net, input, 1, 0, 0.000006)
 
 test_visits['predictions'] = test_visits.input.apply(get_pred_list)
 
+# %%
+communities = detect_communities(net, 'modularity')
+def get_comm_det_res(input):
+    input = input.strip(' \'')
+    return get_community(net, input, communities)
+test_visits['predictions'] = test_visits.input.apply(get_comm_det_res)
 # %%
 def evaluate(results):
     def get_diff(true, pred):
@@ -40,3 +47,5 @@ def evaluate(results):
 # %%
 results = evaluate(test_visits)
 results.plot.hist(bins=15, logy=True)
+print('The accuracy is', np.average(results))
+# %%

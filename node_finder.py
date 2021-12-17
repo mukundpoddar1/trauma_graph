@@ -1,4 +1,6 @@
 import networkx as nx
+from networkx.algorithms.community.centrality import girvan_newman
+from networkx.algorithms.community import greedy_modularity_communities
 
 def connected_nodes(graph, source_node, degree, number, weight_thres):
     '''
@@ -62,8 +64,39 @@ def connected_nodes(graph, source_node, degree, number, weight_thres):
         if len(temp)!=0:
             result_nodes[cur_num_edge] = [x for x in temp if weights[x]>weight_thres]
         neighbors = [x for x in temp if weights[x]>weight_thres]
-        flattened_result = []
-        [flattened_result.extend(x) for x in result_nodes.values()]
 
+    flattened_result = []
+    [flattened_result.extend(x) for x in result_nodes.values()]
     return flattened_result
 
+def detect_communities(network, algo='girvan'):
+    if algo is 'girvan':
+        from networkx import edge_betweenness_centrality as betweenness
+        def most_central_edge(G):
+            centrality = betweenness(G, weight="weight")
+            return max(centrality, key=centrality.get)
+        node_groups = girvan_newman(network, most_valuable_edge=most_central_edge)
+        communities = []
+        for com in next(node_groups):
+            communities.append(list(com))
+    elif algo is 'modularity':
+        node_groups = list(greedy_modularity_communities(network))
+        communities = []
+        for com in node_groups:
+            communities.append(list(com))
+    return communities
+
+def get_community(network, node, communities):
+    '''
+    Return the community the input node it is as returned from the community detection algo
+
+    Input:
+        network: the whole trauma graph
+        node: input node
+    
+    '''    
+    result = []
+    for comm in communities:
+        if node in comm:
+            result.extend(comm)
+    return result
